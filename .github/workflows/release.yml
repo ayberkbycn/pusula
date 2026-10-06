@@ -1,8 +1,3 @@
-# Pusula — Windows sürümünü otomatik derler ve GitHub Releases'e yükler.
-# Yayınlamanın iki yolu var:
-#   1) Actions > Release > Run workflow  ("Yayınla" işaretli)  → package.json'daki sürüm yayınlanır
-#   2) "v" ile başlayan bir etiket göndermek (ör. v1.0.1)
-# "Yayınla" işaretini kaldırıp çalıştırırsan sadece derler; .exe'yi Actions sayfasından indirebilirsin.
 name: Release
 
 on:
@@ -16,7 +11,7 @@ on:
         default: true
 
 permissions:
-  contents: write   # Release oluşturup dosya yükleyebilmek için
+  contents: write
 
 jobs:
   windows:
@@ -29,10 +24,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
       - name: Bağımlılıkları kur
-        run: npm ci
+        run: npm install
 
       - name: Etiket ile package.json sürümü aynı mı?
         if: github.ref_type == 'tag'
@@ -42,6 +36,18 @@ jobs:
           if [ "$V" != "$GITHUB_REF_NAME" ]; then
             echo "::error::Etiket $GITHUB_REF_NAME ama package.json sürümü $V. İkisi aynı olmalı."
             exit 1
+          fi
+
+      - name: Sürüm etiketini oluştur (elle çalıştırmada)
+        if: github.ref_type != 'tag' && env.PUBLISH == 'true'
+        shell: bash
+        run: |
+          V="v$(node -p "require('./package.json').version")"
+          if git ls-remote --exit-code --tags origin "refs/tags/$V" >/dev/null; then
+            echo "$V etiketi zaten var."
+          else
+            git tag "$V"
+            git push origin "$V"
           fi
 
       - name: Derle ve yayınla
