@@ -3,7 +3,7 @@
    • Verileri kullanıcı klasöründe dosya olarak tutar (%APPDATA%/Pusula/data)
    • "Beni hatırla" için Windows'un güvenli depolamasını (safeStorage / DPAPI) kullanır
    • GitHub Releases üzerinden otomatik güncelleme yapar */
-const { app, BrowserWindow, ipcMain, safeStorage, shell, Menu, session } = require('electron');
+const { app, BrowserWindow, ipcMain, safeStorage, shell, Menu, session, Notification } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -45,6 +45,14 @@ ipcMain.on('safe:decrypt', (e, b) => { try { e.returnValue = safeStorage.decrypt
 
 ipcMain.on('app:version', e => { e.returnValue = app.getVersion(); });
 ipcMain.on('app:focus', () => { if (win) { if (win.isMinimized()) win.restore(); win.show(); win.focus(); } });
+
+/* ---------------- Windows bildirimleri ---------------- */
+ipcMain.on('app:notify', (e, title, body) => {
+  if (!Notification.isSupported()) return;
+  const n = new Notification({ title: String(title || 'Pusula'), body: String(body || ''), icon: path.join(__dirname, 'build', 'icon.png') });
+  n.on('click', () => { if (win) { if (win.isMinimized()) win.restore(); win.show(); win.focus(); win.webContents.send('app:notify-click'); } });
+  n.show();
+});
 
 /* ---------------- Pencere konumu/boyutu ---------------- */
 const WIN_FILE = path.join(app.getPath('userData'), 'window.json');

@@ -1225,10 +1225,14 @@ svg text{fill:var(--muted);font-family:Poppins;font-size:10px}
    çevrilir; Türkçe'ye dönünce özgün metinler geri yüklenir. Kullanıcının girdiği içerik çevrilmez. */
 // Uygulama sürümü: masaüstü uygulamasında kurulu sürüm Electron/Tauri tarafından verilir; yoksa bu değer kullanılır
 const APP_VERSION=(window.pusula&&window.pusula.version)||'1.0.0';
-const APP_BUILD='2026-10-06';
+const APP_BUILD='2026-10-07';
 /* Sürüm notları: her yeni sürümde EN ÜSTE yeni bir kayıt eklenir.
    tür: 'new' (yeni) · 'imp' (iyileştirme) · 'fix' (düzeltme) */
 const CHANGELOG=[
+  {v:'1.0.1', date:'2026-10-07', items:[
+    ['fix','Bildirimler artık Windows bildirimi olarak da görünüyor','Notifications now also appear as Windows notifications'],
+    ['imp','Ayarlar\'daki "Dene" düğmesi Windows bildirimini de gösteriyor','The "Try" button in Settings also shows the Windows notification'],
+  ]},
   {v:'1.0.0', date:'2026-10-06', items:[
     ['new','Fitness: güncel ölçüler, diyet listeleri, öğün onayı ve günlük makro takibi','Fitness: current measurements, diet plans, meal confirmation and daily macro tracking'],
     ['new','Haftalık ölçü kayıtları, makro kayıtları ve indirilebilir aylık raporlar','Weekly measurement records, macro records and downloadable monthly reports'],
@@ -3491,12 +3495,13 @@ setInterval(checkAlerts,20000);
 
 /* ================= Masaüstü: Windows bildirimi + otomatik güncelleme ================= */
 function nativeNotify(n){
-  if(!window.pusula || document.hasFocus()) return;           // uygulama öndeyse sadece içerideki bildirim yeter
-  try{ const strip=h=>{ const d=document.createElement('div'); d.innerHTML=h; return d.textContent; };
-    const no=new Notification(strip(trStr(n.title)), {body:strip(trStr(n.body)), silent:false});
-    no.onclick=()=>{ window.pusula.focus&&window.pusula.focus(); if(Auth.user) openPage('Bildirimler'); };
-  }catch(e){}
+  const P=window.pusula; if(!P||!P.notify) return;
+  const test=/test/.test(n.key||'');
+  if(!test && document.hasFocus()) return;                    // uygulama öndeyse içerideki bildirim yeter ("Dene" her zaman gösterir)
+  const strip=h=>{ const d=document.createElement('div'); d.innerHTML=trStr(String(h||'')); return d.textContent; };
+  P.notify(strip(n.title), strip(n.body));
 }
+if(window.pusula&&window.pusula.onNotifyClick) window.pusula.onNotifyClick(()=>{ if(Auth.user) openPage('Bildirimler'); });
 (function(){
   const U=window.pusula&&window.pusula.updater; if(!U) return;
   const bar=document.getElementById('updBar');

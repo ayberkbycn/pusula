@@ -29,6 +29,8 @@ contextBridge.exposeInMainWorld('pusula', {
   },
   onBeforeClose: f => { if (typeof f === 'function') closeHandlers.push(f); },
   focus: () => ipcRenderer.send('app:focus'),
+  notify: (title, body) => ipcRenderer.send('app:notify', String(title), String(body)),
+  onNotifyClick: f => ipcRenderer.on('app:notify-click', () => f()),
   updater: {
     on: (ch, f) => { (updHandlers[ch] = updHandlers[ch] || []).push(f); },
     install: () => ipcRenderer.send('upd:install')
