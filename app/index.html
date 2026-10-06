@@ -94,7 +94,7 @@ nav a.on{background:var(--hi-bg);color:var(--hi-text)}
 .page::-webkit-scrollbar{width:6px}.page::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
 
 /* Ayarlar */
-.settings{max-width:820px;display:flex;flex-direction:column;gap:12px}
+.settings{display:flex;flex-direction:column;gap:12px}
 .set-card{background:var(--card);border-radius:14px;overflow:hidden}
 .set-head{width:100%;display:flex;align-items:center;gap:14px;padding:16px 18px;background:none;border:0;color:var(--text);font:inherit;cursor:pointer;text-align:left}
 .set-head:hover{background:rgba(127,127,127,.06)}
@@ -202,7 +202,7 @@ html[lang=en] .avatar{--chg:"Change"}
 .switch.on i::after{transform:translateX(18px)}
 
 /* ---- Bildirimler ---- */
-.ntf-wrap{max-width:820px;display:flex;flex-direction:column;gap:12px}
+.ntf-wrap{display:flex;flex-direction:column;gap:12px}
 .ntf-head{display:flex;align-items:center;gap:12px}
 .ntf-head h3{font-weight:500;font-size:15px}
 .ntf-head small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px}
@@ -241,7 +241,7 @@ html[lang=en] .avatar{--chg:"Change"}
 .toast .ico svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
 /* ---- Fitness ---- */
-.fit-grid{display:grid;grid-template-columns:320px minmax(0,700px);gap:16px;align-items:start}
+.fit-grid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px;align-items:start}
 .measure{width:320px}
 
 /* ---- Diyet kartı ---- */
@@ -533,7 +533,7 @@ html[lang=en] .avatar{--chg:"Change"}
 
 
 /* ---- Sertifikalar ---- */
-.cert-page{display:flex;flex-direction:column;gap:16px;max-width:980px}
+.cert-page{display:flex;flex-direction:column;gap:16px}
 .cf-name{margin-bottom:14px;flex:1}
 .cf-top{display:flex;gap:14px;align-items:flex-end}
 .logo-pick{position:relative;width:88px;height:88px;flex-shrink:0;margin-bottom:14px;border-radius:16px;border:1.5px dashed var(--line);background:var(--card2);display:grid;place-items:center;cursor:pointer;color:var(--muted);font-size:10.5px;text-align:center;transition:border-color .2s}
@@ -610,7 +610,7 @@ html[lang=en] .avatar{--chg:"Change"}
 .ct-item .x:hover{background:var(--a2);color:#fff}
 .ct-item .x svg{width:11px;height:11px;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
 .ct-add{display:flex;gap:8px;margin-top:10px}
-.mycerts{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.mycerts{display:grid;grid-template-columns:repeat(auto-fill,minmax(max(260px,calc((100% - 36px) / 4)),1fr));gap:12px}
 .my-head{cursor:default}
 .my-head .my-all-link{display:none;font-size:12px;color:var(--a1);font-weight:500;align-self:center}
 .my-head.more{cursor:pointer}
@@ -746,7 +746,7 @@ html[lang=en] .avatar{--chg:"Change"}
 
 
 /* ---- Ana sayfa ---- */
-.home-grid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px;align-items:start;max-width:1000px}
+.home-grid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px;align-items:start}
 .cl-card{background:var(--card);border-radius:18px;padding:20px}
 .cl-head{margin-bottom:12px}
 .cl-head h3{font-weight:500;font-size:15px;display:flex;align-items:center;gap:8px}
@@ -1229,6 +1229,9 @@ const APP_BUILD='2026-10-07';
 /* Sürüm notları: her yeni sürümde EN ÜSTE yeni bir kayıt eklenir.
    tür: 'new' (yeni) · 'imp' (iyileştirme) · 'fix' (düzeltme) */
 const CHANGELOG=[
+  {v:'1.0.2', date:'2026-10-07', items:[
+    ['imp','Sayfalar artık geniş ve tam ekranda pencerenin tamamını kullanıyor','Pages now use the whole window on wide and full screens'],
+  ]},
   {v:'1.0.1', date:'2026-10-07', items:[
     ['fix','Bildirimler artık Windows bildirimi olarak da görünüyor','Notifications now also appear as Windows notifications'],
     ['imp','Ayarlar\'daki "Dene" düğmesi Windows bildirimini de gösteriyor','The "Try" button in Settings also shows the Windows notification'],
