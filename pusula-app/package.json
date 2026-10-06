@@ -1,0 +1,44 @@
+{
+  "name": "pusula",
+  "productName": "Pusula",
+  "version": "1.0.0",
+  "description": "Pusula — kişisel yaşam takip uygulaması",
+  "author": "Ayberk Software",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win",
+    "release": "electron-builder --win --publish always"
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.ayberksoftware.pusula",
+    "productName": "Pusula",
+    "copyright": "© Ayberk Software",
+    "files": ["main.js", "preload.js", "app/**/*", "build/icon.png"],
+    "directories": { "output": "dist", "buildResources": "build" },
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "icon": "build/icon.ico",
+      "artifactName": "Pusula-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Pusula",
+      "deleteAppDataOnUninstall": false
+    },
+    "publish": [{ "provider": "github", "releaseType": "release" }]
+  }
+}
