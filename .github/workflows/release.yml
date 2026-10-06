@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Yayınla (Releases sayfasına yükle)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    env:
+      PUBLISH: ${{ github.ref_type == 'tag' || inputs.publish }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Bağımlılıkları kur
+        run: npm ci
+
+      - name: Etiket ile package.json sürümü aynı mı?
+        if: github.ref_type == 'tag'
+        shell: bash
+        run: |
+          V="v$(node -p "require('./package.json').version")"
+          if [ "$V" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Etiket $GITHUB_REF_NAME ama package.json sürümü $V. İkisi aynı olmalı."
+            exit 1
+          fi
+
+      - name: Derle ve yayınla
+        if: env.PUBLISH == 'true'
+        run: npx electron-builder --win --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sadece derle
+        if: env.PUBLISH != 'true'
+        run: npx electron-builder --win --publish never
+
+      - name: Kurulum dosyasını sakla
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pusula-Setup
+          path: |
+            dist/*.exe
+            dist/latest.yml
+          if-no-files-found: error
